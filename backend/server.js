@@ -28,18 +28,8 @@ app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 
-app.get("/api/v1/books", async (request, response, next) => {
-  try {
-    if (mongoose.connection.readyState !== 1) {
-      return response.status(200).json({ success: true, data: books });
-    }
-
-    const mongoBooks = await Book.find().sort({ _id: -1 }).lean();
-    const mongoBookData = mongoBooks.map((book) => ({ ...book, id: book._id.toString() }));
-    return response.status(200).json({ success: true, data: [...mongoBookData, ...books] });
-  } catch (error) {
-    return next(error);
-  }
+app.get("/api/v1/books", (request, response) => {
+  response.status(200).json({ success: true, data: books });
 });
 app.get("/api/v1/borrowings", (request, response) => response.status(200).json({ success: true, data: borrowings }));
 
